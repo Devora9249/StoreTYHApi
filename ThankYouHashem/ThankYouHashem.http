@@ -1,0 +1,6 @@
+@ThankYouHashem_HostAddress = http://localhost:5074
+
+GET {{ThankYouHashem_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
