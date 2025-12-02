@@ -12,14 +12,18 @@ namespace ThankYouHashem.Controllers
     {
         private readonly OrderService _orderService;
 
-        public OrderController()
+        private readonly INotificationService _notify;
+
+        public OrderController(INotificationService notify)
         {
             _orderService = new OrderService();
+            _notify = notify;
         }
+
 
         //dtos
 
-       //קבלת כל המוצרים
+        //קבלת כל המוצרים
         [HttpGet("GetAllProductsDto")]
         public IActionResult GetOredrsDto()
         {
@@ -32,6 +36,8 @@ namespace ThankYouHashem.Controllers
         public IActionResult Create([FromBody] addOrderDto order)
         {
             var result = _orderService.addOrder(order);
+            _notify.send("New order has been created with ID: " + result.Id);
+            
             return Ok(result);
         }
 

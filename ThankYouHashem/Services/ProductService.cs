@@ -6,9 +6,14 @@ using ThankYouHashem.Repository;
 
 namespace ThankYouHashem.Services
 {
-    public class ProductService
+    public class ProductService:IProductService
     {
-        private readonly ProductRepository _repository = new();
+        private readonly IProductRepository _repository;
+
+        public ProductService(IProductRepository repo)
+        {
+            _repository = repo;
+        }
 
         //dto
         public List<ProductDto> GetOrdersDto()

@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ThankYouHashem.Data;
+using ThankYouHashem.Models;
+using ThankYouHashem.Repository;
+using ThankYouHashem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<INotificationService, NotificationEmailService>();
+
+//builder.Services.AddScoped<INotificationService, NotificationSmsService>();
 
 
 var app = builder.Build();

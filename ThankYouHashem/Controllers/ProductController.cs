@@ -10,11 +10,11 @@ namespace ThankYouHashem.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
-        public ProductsController()
+        public ProductsController(IProductService srv)
         {
-            _productService = new ProductService();
+            _productService = srv;
         }
 
         //dtos

@@ -9,11 +9,13 @@ using ThankYouHashem.Models;
 
 namespace ThankYouHashem.Repository
 {
-    public class ProductRepository
+    public class ProductRepository: IProductRepository
 
     {
         StoreContext context = LibraryContextFactory.CreateContext();
         private readonly IMapper _mapper;
+
+
 
 
         //dto
