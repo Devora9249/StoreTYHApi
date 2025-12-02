@@ -14,9 +14,9 @@ namespace ThankYouHashem.Controllers
 
         private readonly INotificationService _notify;
 
-        public OrderController(INotificationService notify)
+        public OrderController(INotificationService notify, OrderService orderService)
         {
-            _orderService = new OrderService();
+            _orderService = orderService;
             _notify = notify;
         }
 
@@ -35,7 +35,7 @@ namespace ThankYouHashem.Controllers
         [HttpPost("addOrder")]
         public IActionResult Create([FromBody] addOrderDto order)
         {
-            var result = _orderService.addOrder(order);
+            var result = _orderService.AddOrder(order);
             _notify.send("New order has been created with ID: " + result.Id);
             
             return Ok(result);

@@ -1,9 +1,4 @@
-﻿using AutoMapper;
-using BooksApi.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
+﻿using Microsoft.EntityFrameworkCore;
 using ThankYouHashem.Data;
 using ThankYouHashem.Dto;
 using ThankYouHashem.Models;
@@ -11,16 +6,19 @@ using ThankYouHashem.Models;
 namespace ThankYouHashem.Repository
 {
     public class OrderRepository
-
     {
-        StoreContext context = LibraryContextFactory.CreateContext();
+        private readonly StoreContext _context;
 
+        public OrderRepository(StoreContext context)
+        {
+            _context = context;
+        }
 
         public List<OrderDto> GetOrdersDto()
         {
-            return context.Orders
+            return _context.Orders
                 .Include(p => p.Products)
-                .Include(u=>u.User)
+                .Include(u => u.User)
                 .Select(p => new OrderDto
                 {
                     Id = p.Id,
@@ -30,16 +28,15 @@ namespace ThankYouHashem.Repository
                     {
                         ProductId = prod.Id,
                         Name = prod.name,
-                        Price = prod.price,
+                        Price = prod.price
                     }).ToList()
                 })
                 .ToList();
         }
 
-
         public Order AddOrder(addOrderDto dto)
         {
-            var products = context.Products
+            var products = _context.Products
                 .Where(p => dto.ProductsIds.Contains(p.Id))
                 .ToList();
 
@@ -50,11 +47,10 @@ namespace ThankYouHashem.Repository
                 Products = products
             };
 
-            context.Orders.Add(newOrder);
-            context.SaveChanges();
+            _context.Orders.Add(newOrder);
+            _context.SaveChanges();
 
             return newOrder;
         }
-
     }
 }

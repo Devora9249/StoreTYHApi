@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BooksApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -50,4 +49,5 @@ namespace ThankYouHashem.Services
             mail.To.Add("porat4241@gmail.com"); // למי לשלוח
             smtp.Send(mail);
         }
+    }
 }

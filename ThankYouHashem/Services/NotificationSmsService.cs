@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BooksApi.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

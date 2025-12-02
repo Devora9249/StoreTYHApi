@@ -1,5 +1,4 @@
-﻿using BooksApi.Data;
-using ThankYouHashem.Data;
+﻿using ThankYouHashem.Data;
 using ThankYouHashem.Dto;
 using ThankYouHashem.Repository;
 
@@ -7,19 +6,23 @@ namespace ThankYouHashem.Transactions
 {
     public class AddProductTransaction
     {
-        private readonly ProductRepository _repository = new();
-        StoreContext context = LibraryContextFactory.CreateContext();
+        private readonly StoreContext _context;
+        private readonly ProductRepository _repository;
 
+        public AddProductTransaction(StoreContext context, ProductRepository repository)
+        {
+            _context = context;
+            _repository = repository;
+        }
 
         public int AddProductIfActiveExists(ProductDto dto)
         {
-            using var transaction = context.Database.BeginTransaction();
+            using var transaction = _context.Database.BeginTransaction();
 
             try
             {
                 int activeCount = _repository.GetNonDeletedCount();
 
-                //רק אם קיימים מוצרים פעילים — נוסיף מוצר חדש
                 if (activeCount > 0)
                 {
                     int newProductId = _repository.CreateProductByProc(dto);
@@ -39,6 +42,5 @@ namespace ThankYouHashem.Transactions
                 throw;
             }
         }
-
     }
 }

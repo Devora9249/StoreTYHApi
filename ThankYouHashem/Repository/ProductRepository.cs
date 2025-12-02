@@ -1,27 +1,29 @@
 ﻿using AutoMapper;
-using BooksApi.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
 using ThankYouHashem.Data;
 using ThankYouHashem.Dto;
 using ThankYouHashem.Models;
 
 namespace ThankYouHashem.Repository
 {
-    public class ProductRepository: IProductRepository
-
+    public class ProductRepository : IProductRepository
     {
-        StoreContext context = LibraryContextFactory.CreateContext();
+        private readonly StoreContext _context;
         private readonly IMapper _mapper;
 
+        public ProductRepository(StoreContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
 
-
-
-        //dto
+        // =====================
+        // DTO
+        // =====================
         public List<ProductDto> GetProductsDto()
         {
-            return context.Products
+            return _context.Products
                 .Where(p => !p.IsDeleted)
                 .Include(p => p.Category)
                 .Select(p => new ProductDto
@@ -34,25 +36,24 @@ namespace ThankYouHashem.Repository
                 .ToList();
         }
 
-        
-
-        //procdures
-        //1
+        // =====================
+        // PROCEDURES
+        // =====================
         public int GetNonDeletedCount()
         {
-            var outputParam = new SqlParameter("@count", System.Data.SqlDbType.Int);
-            outputParam.Direction = System.Data.ParameterDirection.Output;
+            var outputParam = new SqlParameter("@count", System.Data.SqlDbType.Int)
+            {
+                Direction = System.Data.ParameterDirection.Output
+            };
 
-            context.Database.ExecuteSqlInterpolated(
+            _context.Database.ExecuteSqlInterpolated(
                 $"EXEC returnIsDeletedNum1 @count={outputParam} OUTPUT"
             );
 
             return (int)outputParam.Value;
         }
 
-        //2
-        //create product by procedure
-        public int CreateProductByProc(ProductDto productDto )
+        public int CreateProductByProc(ProductDto productDto)
         {
             var outputParam = new SqlParameter
             {
@@ -67,19 +68,22 @@ namespace ThankYouHashem.Repository
                 new SqlParameter("@price", productDto.Price),
                 new SqlParameter("@categoryName", productDto.CategoryName),
                 outputParam
-             };
+            };
 
-            context.Database.ExecuteSqlRaw(
-            "EXEC AddProducts @name, @price,@categoryName, @NewProductId OUTPUT",
-            parameters);
-            int newProductId = (int)outputParam.Value;
-            return newProductId;
+            _context.Database.ExecuteSqlRaw(
+                "EXEC AddProducts @name, @price, @categoryName, @NewProductId OUTPUT",
+                parameters
+            );
+
+            return (int)outputParam.Value;
         }
 
-        //mapper
+        // =====================
+        // MAPPER
+        // =====================
         public List<ProductDto> GetProductsWithMap()
         {
-            var products = context.Products
+            var products = _context.Products
                 .Include(p => p.Category)
                 .Where(p => !p.IsDeleted)
                 .ToList();
@@ -87,6 +91,9 @@ namespace ThankYouHashem.Repository
             return _mapper.Map<List<ProductDto>>(products);
         }
 
+        // =====================
+        // CRUD
+        // =====================
         public Product CreateProduct(CreateProductDto dto)
         {
             var newProduct = new Product
@@ -97,11 +104,10 @@ namespace ThankYouHashem.Repository
                 description = ""
             };
 
-            context.Products.Add(newProduct);
-            context.SaveChanges();
+            _context.Products.Add(newProduct);
+            _context.SaveChanges();
             return newProduct;
         }
-
 
         public List<Product> CreateMultipleProducts(List<CreateProductDto> products)
         {
@@ -113,54 +119,55 @@ namespace ThankYouHashem.Repository
                 description = ""
             }).ToList();
 
-            context.Products.AddRange(newProducts);
-            context.SaveChanges();
+            _context.Products.AddRange(newProducts);
+            _context.SaveChanges();
             return newProducts;
         }
 
         public dynamic GetProductWithCategories()
         {
-            var prodCat = context.Categories
-                   .Include(x => x.Products)
-                    .Select(c => new
-                    {
-                        c.Name,
-                        Products = c.Products.Where(p => !p.IsDeleted).Select(b => b.name)
-                    }).ToList();
-
-
-            return prodCat;
-
+            return _context.Categories
+                .Include(x => x.Products)
+                .Select(c => new
+                {
+                    c.Name,
+                    Products = c.Products
+                        .Where(p => !p.IsDeleted)
+                        .Select(b => b.name)
+                })
+                .ToList();
         }
 
         public dynamic GetProductsSort()
         {
-            var products = context.Products.Where(p => !p.IsDeleted)
-                .Select(p => p).OrderBy(x => x.name).ToList();
-             return products;
+            return _context.Products
+                .Where(p => !p.IsDeleted)
+                .OrderBy(x => x.name)
+                .ToList();
         }
 
         public dynamic getFullOrders()
         {
-            var orders = context.Orders.Include(x => x.Products).Select(c => new
-            {
-                c.Id,
-                Products = c.Products.Select(b => b.name)
-            }).ToList();
-            return orders;
+            return _context.Orders
+                .Include(x => x.Products)
+                .Select(c => new
+                {
+                    c.Id,
+                    Products = c.Products.Select(b => b.name)
+                })
+                .ToList();
         }
 
         public Product CreateProduct(Product product)
         {
-
-            context.Products.Add(product);
-            context.SaveChanges();
+            _context.Products.Add(product);
+            _context.SaveChanges();
             return product;
         }
 
         public List<Product> GetProductsByCategory(int categoryId)
         {
-            return context.Products
+            return _context.Products
                 .Where(p => p.CategoryId == categoryId && !p.IsDeleted)
                 .Include(p => p.Category)
                 .ToList();
@@ -168,10 +175,9 @@ namespace ThankYouHashem.Repository
 
         public List<Product> CreateMultipleProducts(List<Product> products)
         {
-            context.Products.AddRange(products);
-            context.SaveChanges(); 
+            _context.Products.AddRange(products);
+            _context.SaveChanges();
             return products;
         }
-
     }
 }

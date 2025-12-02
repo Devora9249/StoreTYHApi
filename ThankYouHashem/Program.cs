@@ -14,10 +14,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<StoreContext>(options =>
 
-//options.UseSqlServer("Server=DESKTOP-1VUANBN;DataBase=TYH;Integrated Security=SSPI;Persist Security Info=False;TrustServerCertificate=True;"));
+options.UseSqlServer("Server=localhost,1433;Database=216224360TYH;User Id=sa;Password=YourStrong@Pass123;TrustServerCertificate=True;"));
 
 
-options.UseSqlServer("Server=Srv2\\pupils;DataBase=215967852TYH;Integrated Security=SSPI;Persist Security Info=False;TrustServerCertificate=True;"));
+//options.UseSqlServer("Server=Srv2\\pupils;DataBase=215967852TYH;Integrated Security=SSPI;Persist Security Info=False;TrustServerCertificate=True;"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -26,6 +26,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<OrderService>();
+
 
 builder.Services.AddScoped<INotificationService, NotificationEmailService>();
 
