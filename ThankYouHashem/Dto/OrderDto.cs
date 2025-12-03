@@ -7,7 +7,7 @@ namespace ThankYouHashem.Dto
         public int Id { get; set; }
         public DateTime OrderDate { get; set; }
         public string userName { get; set; }
-        public List<ProductInOrderDto> Products { get; set; } = new();
+        //public List<ProductInOrderDto> Products { get; set; } = new();
 
     }
 

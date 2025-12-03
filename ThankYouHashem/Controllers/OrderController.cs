@@ -23,8 +23,8 @@ namespace ThankYouHashem.Controllers
 
         //dtos
 
-        //קבלת כל המוצרים
-        [HttpGet("GetAllProductsDto")]
+        //קבלת כל ההזמנות
+        [HttpGet("GetAllOrdersDto")]
         public IActionResult GetOredrsDto()
         {
             return Ok(_orderService.GetOrdersDto());
@@ -37,7 +37,7 @@ namespace ThankYouHashem.Controllers
         {
             var result = _orderService.AddOrder(order);
             _notify.send("New order has been created with ID: " + result.Id);
-            
+         
             return Ok(result);
         }
 

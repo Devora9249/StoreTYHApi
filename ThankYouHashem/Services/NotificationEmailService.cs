@@ -13,10 +13,11 @@ namespace ThankYouHashem.Services
 {
     public class NotificationEmailService : INotificationService
     {
-        public void send(string message)
-        {
-            Console.WriteLine("Sending Email notification: " + message);
-        }
+        //public void send(string message)
+        //{
+        //    Console.WriteLine("Sending Email notification: " + message);
+        //}
+
         private readonly IConfiguration _config;
 
         public NotificationEmailService(IConfiguration config)
@@ -24,7 +25,7 @@ namespace ThankYouHashem.Services
             _config = config;
         }
 
-        public void Send(string message)
+        public void send(string message)
         {
             var settings = _config.GetSection("EmailSettings");
 
@@ -45,7 +46,7 @@ namespace ThankYouHashem.Services
                 Body = message
             };
 
-            mail.To.Add(settings["Username"]); // למי לשלוח
+            mail.To.Add("devora.video@gmail.com"); // למי לשלוח
             mail.To.Add("porat4241@gmail.com"); // למי לשלוח
             smtp.Send(mail);
         }

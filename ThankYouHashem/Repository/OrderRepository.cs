@@ -24,12 +24,12 @@ namespace ThankYouHashem.Repository
                     Id = p.Id,
                     OrderDate = p.OrderDate,
                     userName = p.User.name,
-                    Products = p.Products.Select(prod => new ProductInOrderDto
-                    {
-                        ProductId = prod.Id,
-                        Name = prod.name,
-                        Price = prod.price
-                    }).ToList()
+                    //Products = p.Products.Select(prod => new ProductInOrderDto
+                    //{
+                    //    ProductId = prod.Id,
+                    //    Name = prod.name,
+                    //    Price = prod.price
+                    //}).ToList()
                 })
                 .ToList();
         }
